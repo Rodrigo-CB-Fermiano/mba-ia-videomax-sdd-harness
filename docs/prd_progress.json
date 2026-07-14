@@ -23,55 +23,55 @@
       "dependencies": [],
       "folder": "docs/F01-authentication-system",
       "status": {
-        "spec": "pending",
-        "plan": "pending",
-        "implementation": "pending"
+        "spec": "done",
+        "plan": "done",
+        "implementation": "done"
       },
       "acceptance_criteria": [
         {
           "id": "F01-AC01",
           "text": "User can register with a valid email and a password of 8+ characters including at least one number; account is created and user is redirected to /library",
-          "status": "pending"
+          "status": "implemented"
         },
         {
           "id": "F01-AC02",
           "text": "User can log in with correct credentials and is redirected to /library",
-          "status": "pending"
+          "status": "implemented"
         },
         {
           "id": "F01-AC03",
           "text": "Login with an incorrect password returns 'Email or password is incorrect.' without revealing which field is wrong",
-          "status": "pending"
+          "status": "implemented"
         },
         {
           "id": "F01-AC04",
           "text": "After 5 consecutive failed login attempts the account is locked for 15 minutes and the lockout message is displayed",
-          "status": "pending"
+          "status": "implemented"
         },
         {
           "id": "F01-AC05",
           "text": "Google OAuth flow completes successfully: new account created on first use, existing account matched on subsequent uses",
-          "status": "pending"
+          "status": "implemented"
         },
         {
           "id": "F01-AC06",
           "text": "GitHub OAuth flow completes successfully: new account created on first use, existing account matched on subsequent uses",
-          "status": "pending"
+          "status": "implemented"
         },
         {
           "id": "F01-AC07",
           "text": "Password reset email is delivered within 60 seconds; link navigates to a set-new-password form",
-          "status": "pending"
+          "status": "implemented"
         },
         {
           "id": "F01-AC08",
           "text": "Expired or already-used reset link shows 'This link has expired. Request a new password reset.'",
-          "status": "pending"
+          "status": "implemented"
         },
         {
           "id": "F01-AC09",
           "text": "A logged-out user accessing a protected route is redirected to /login",
-          "status": "pending"
+          "status": "implemented"
         }
       ]
     },
