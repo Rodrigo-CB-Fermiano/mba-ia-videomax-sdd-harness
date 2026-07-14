@@ -1,0 +1,548 @@
+{
+  "project": {
+    "name": "VideoMax",
+    "prd": "docs/PRD.md",
+    "created_at": "2026-07-14"
+  },
+  "waves": [
+    { "wave": 1, "features": ["F01"] },
+    { "wave": 2, "features": ["F02"] },
+    { "wave": 3, "features": ["F03"] },
+    { "wave": 4, "features": ["F04", "F06"] },
+    { "wave": 5, "features": ["F05", "F07"] },
+    { "wave": 6, "features": ["F08"] }
+  ],
+  "foundation_features": ["F01"],
+  "features": [
+    {
+      "id": "F01",
+      "name": "Authentication System",
+      "priority": 1,
+      "wave": 1,
+      "is_foundation": true,
+      "dependencies": [],
+      "folder": "docs/F01-authentication-system",
+      "status": {
+        "spec": "pending",
+        "plan": "pending",
+        "implementation": "pending"
+      },
+      "acceptance_criteria": [
+        {
+          "id": "F01-AC01",
+          "text": "User can register with a valid email and a password of 8+ characters including at least one number; account is created and user is redirected to /library",
+          "status": "pending"
+        },
+        {
+          "id": "F01-AC02",
+          "text": "User can log in with correct credentials and is redirected to /library",
+          "status": "pending"
+        },
+        {
+          "id": "F01-AC03",
+          "text": "Login with an incorrect password returns 'Email or password is incorrect.' without revealing which field is wrong",
+          "status": "pending"
+        },
+        {
+          "id": "F01-AC04",
+          "text": "After 5 consecutive failed login attempts the account is locked for 15 minutes and the lockout message is displayed",
+          "status": "pending"
+        },
+        {
+          "id": "F01-AC05",
+          "text": "Google OAuth flow completes successfully: new account created on first use, existing account matched on subsequent uses",
+          "status": "pending"
+        },
+        {
+          "id": "F01-AC06",
+          "text": "GitHub OAuth flow completes successfully: new account created on first use, existing account matched on subsequent uses",
+          "status": "pending"
+        },
+        {
+          "id": "F01-AC07",
+          "text": "Password reset email is delivered within 60 seconds; link navigates to a set-new-password form",
+          "status": "pending"
+        },
+        {
+          "id": "F01-AC08",
+          "text": "Expired or already-used reset link shows 'This link has expired. Request a new password reset.'",
+          "status": "pending"
+        },
+        {
+          "id": "F01-AC09",
+          "text": "A logged-out user accessing a protected route is redirected to /login",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "F02",
+      "name": "Video Upload",
+      "priority": 1,
+      "wave": 2,
+      "is_foundation": false,
+      "dependencies": ["F01"],
+      "folder": "docs/F02-video-upload",
+      "status": {
+        "spec": "pending",
+        "plan": "pending",
+        "implementation": "pending"
+      },
+      "acceptance_criteria": [
+        {
+          "id": "F02-AC01",
+          "text": "User can upload a video via drag-and-drop into the drop zone",
+          "status": "pending"
+        },
+        {
+          "id": "F02-AC02",
+          "text": "User can upload a video via the file picker",
+          "status": "pending"
+        },
+        {
+          "id": "F02-AC03",
+          "text": "Files larger than 300 MB are rejected client-side before upload begins with 'File too large. Maximum allowed size is 300 MB.'",
+          "status": "pending"
+        },
+        {
+          "id": "F02-AC04",
+          "text": "Non-video MIME types are rejected with 'Only video files are accepted.'",
+          "status": "pending"
+        },
+        {
+          "id": "F02-AC05",
+          "text": "Upload progress shows filename, percentage, speed, and estimated time remaining in real time",
+          "status": "pending"
+        },
+        {
+          "id": "F02-AC06",
+          "text": "Upload can be cancelled; partial file is removed and quota is not consumed",
+          "status": "pending"
+        },
+        {
+          "id": "F02-AC07",
+          "text": "On completion, the video card appears in the library with status 'Queued' within 5 seconds",
+          "status": "pending"
+        },
+        {
+          "id": "F02-AC08",
+          "text": "Attempting to upload when quota would be exceeded shows the remaining space and blocks the upload",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "F03",
+      "name": "Background Processing",
+      "priority": 1,
+      "wave": 3,
+      "is_foundation": false,
+      "dependencies": ["F02"],
+      "folder": "docs/F03-background-processing",
+      "status": {
+        "spec": "pending",
+        "plan": "pending",
+        "implementation": "pending"
+      },
+      "acceptance_criteria": [
+        {
+          "id": "F03-AC01",
+          "text": "Transcription starts automatically within 30 seconds of upload completion with no user action required",
+          "status": "pending"
+        },
+        {
+          "id": "F03-AC02",
+          "text": "Processing status transitions in order: Queued → Processing → Ready (or Failed)",
+          "status": "pending"
+        },
+        {
+          "id": "F03-AC03",
+          "text": "Library card status badge updates without page reload within 10 seconds of each transition",
+          "status": "pending"
+        },
+        {
+          "id": "F03-AC04",
+          "text": "Thumbnail appears on the video card after processing completes",
+          "status": "pending"
+        },
+        {
+          "id": "F03-AC05",
+          "text": "Transcription is complete within 2× the video's duration for 95% of uploads in testing",
+          "status": "pending"
+        },
+        {
+          "id": "F03-AC06",
+          "text": "Language detection correctly identifies Portuguese, English, and Spanish on test videos",
+          "status": "pending"
+        },
+        {
+          "id": "F03-AC07",
+          "text": "On transient failure the system retries automatically; the card returns to 'Processing' for each retry attempt",
+          "status": "pending"
+        },
+        {
+          "id": "F03-AC08",
+          "text": "After 3 failed retries, status is set to 'Failed' with the failure reason and a 'Retry' button",
+          "status": "pending"
+        },
+        {
+          "id": "F03-AC09",
+          "text": "Clicking 'Retry' re-queues the job and status resets to 'Queued'",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "F04",
+      "name": "Video Library",
+      "priority": 1,
+      "wave": 4,
+      "is_foundation": false,
+      "dependencies": ["F03"],
+      "folder": "docs/F04-video-library",
+      "status": {
+        "spec": "pending",
+        "plan": "pending",
+        "implementation": "pending"
+      },
+      "acceptance_criteria": [
+        {
+          "id": "F04-AC01",
+          "text": "All uploaded videos appear in the library ordered by most recent upload first",
+          "status": "pending"
+        },
+        {
+          "id": "F04-AC02",
+          "text": "Grid view shows thumbnail, title, duration badge, up to 2 category chips, and status badge per card",
+          "status": "pending"
+        },
+        {
+          "id": "F04-AC03",
+          "text": "List view shows thumbnail, title, duration, up to 3 categories, up to 3 tags, status badge, and upload date per row",
+          "status": "pending"
+        },
+        {
+          "id": "F04-AC04",
+          "text": "Filtering by one category shows only videos assigned to that category; an active filter chip appears below the toolbar",
+          "status": "pending"
+        },
+        {
+          "id": "F04-AC05",
+          "text": "Filtering by one tag shows only videos assigned to that tag",
+          "status": "pending"
+        },
+        {
+          "id": "F04-AC06",
+          "text": "Combining category and tag filters shows only videos matching both (AND logic)",
+          "status": "pending"
+        },
+        {
+          "id": "F04-AC07",
+          "text": "Filtering by status shows only videos in that processing state",
+          "status": "pending"
+        },
+        {
+          "id": "F04-AC08",
+          "text": "Filtering by upload date range shows only videos uploaded within that range",
+          "status": "pending"
+        },
+        {
+          "id": "F04-AC09",
+          "text": "'Clear all' removes all active filters and restores the full library",
+          "status": "pending"
+        },
+        {
+          "id": "F04-AC10",
+          "text": "Archived videos are hidden by default; toggling 'Show archived' reveals them with an 'Archived' visual indicator",
+          "status": "pending"
+        },
+        {
+          "id": "F04-AC11",
+          "text": "Empty library (no videos) displays 'No videos yet. Upload your first video.' with an upload link",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "F05",
+      "name": "Video Management",
+      "priority": 1,
+      "wave": 5,
+      "is_foundation": false,
+      "dependencies": ["F04"],
+      "folder": "docs/F05-video-management",
+      "status": {
+        "spec": "pending",
+        "plan": "pending",
+        "implementation": "pending"
+      },
+      "acceptance_criteria": [
+        {
+          "id": "F05-AC01",
+          "text": "User can rename a video; the new title is saved on blur and 'Saved ✓' confirmation appears inline",
+          "status": "pending"
+        },
+        {
+          "id": "F05-AC02",
+          "text": "Saving a blank title shows 'Title cannot be empty.' and reverts to the previous value",
+          "status": "pending"
+        },
+        {
+          "id": "F05-AC03",
+          "text": "User can add or edit a description up to 500 characters; a live character counter is displayed",
+          "status": "pending"
+        },
+        {
+          "id": "F05-AC04",
+          "text": "User can assign up to 5 categories; attempting a 6th selection is blocked with an inline message",
+          "status": "pending"
+        },
+        {
+          "id": "F05-AC05",
+          "text": "User can assign up to 10 tags; attempting an 11th selection is blocked with an inline message",
+          "status": "pending"
+        },
+        {
+          "id": "F05-AC06",
+          "text": "Archiving a video removes it from the main library view; 'Unarchive' button replaces 'Archive'",
+          "status": "pending"
+        },
+        {
+          "id": "F05-AC07",
+          "text": "Unarchiving restores the video to the main library",
+          "status": "pending"
+        },
+        {
+          "id": "F05-AC08",
+          "text": "Clicking 'Delete' opens a confirmation modal before any deletion occurs",
+          "status": "pending"
+        },
+        {
+          "id": "F05-AC09",
+          "text": "Confirming deletion removes the video, redirects to /library, and displays 'Video deleted.' toast",
+          "status": "pending"
+        },
+        {
+          "id": "F05-AC10",
+          "text": "Storage quota displayed in the upload area decreases by the deleted video's file size after deletion",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "F06",
+      "name": "Video Player with Transcription Panel",
+      "priority": 1,
+      "wave": 4,
+      "is_foundation": false,
+      "dependencies": ["F03"],
+      "folder": "docs/F06-video-player-with-transcription-panel",
+      "status": {
+        "spec": "pending",
+        "plan": "pending",
+        "implementation": "pending"
+      },
+      "acceptance_criteria": [
+        {
+          "id": "F06-AC01",
+          "text": "Video begins playback within 3 seconds of navigating to /video/:id",
+          "status": "pending"
+        },
+        {
+          "id": "F06-AC02",
+          "text": "Each of the 6 playback speeds (0.5×, 0.75×, 1×, 1.25×, 1.5×, 2×) can be selected and takes effect immediately",
+          "status": "pending"
+        },
+        {
+          "id": "F06-AC03",
+          "text": "Fullscreen mode activates and deactivates correctly via the button and the Escape key",
+          "status": "pending"
+        },
+        {
+          "id": "F06-AC04",
+          "text": "Clicking the download button initiates download of the original video file",
+          "status": "pending"
+        },
+        {
+          "id": "F06-AC05",
+          "text": "All transcription segments appear in the panel with their timestamps in HH:MM:SS format",
+          "status": "pending"
+        },
+        {
+          "id": "F06-AC06",
+          "text": "Active segment is highlighted (blue background) and auto-scrolled into view every 250 ms during playback",
+          "status": "pending"
+        },
+        {
+          "id": "F06-AC07",
+          "text": "Clicking a segment seeks the video to that segment's start timestamp within 500 ms",
+          "status": "pending"
+        },
+        {
+          "id": "F06-AC08",
+          "text": "Language badge in the panel header matches the language detected by F03",
+          "status": "pending"
+        },
+        {
+          "id": "F06-AC09",
+          "text": "When transcription is unavailable (Queued or Processing), the panel shows 'Transcription is being processed. It will appear here when ready.'",
+          "status": "pending"
+        },
+        {
+          "id": "F06-AC10",
+          "text": "When processing Failed, the panel shows a failure message and a Retry button",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "F07",
+      "name": "Transcription Search",
+      "priority": 2,
+      "wave": 5,
+      "is_foundation": false,
+      "dependencies": ["F06"],
+      "folder": "docs/F07-transcription-search",
+      "status": {
+        "spec": "pending",
+        "plan": "pending",
+        "implementation": "pending"
+      },
+      "acceptance_criteria": [
+        {
+          "id": "F07-AC01",
+          "text": "Clicking the search icon in the panel header reveals the search input field",
+          "status": "pending"
+        },
+        {
+          "id": "F07-AC02",
+          "text": "Typing 2+ characters updates highlighted segments within 300 ms (debounced)",
+          "status": "pending"
+        },
+        {
+          "id": "F07-AC03",
+          "text": "All matching segments are highlighted in yellow; non-matching segments are dimmed to 40% opacity",
+          "status": "pending"
+        },
+        {
+          "id": "F07-AC04",
+          "text": "Match counter accurately displays 'N of M matches'",
+          "status": "pending"
+        },
+        {
+          "id": "F07-AC05",
+          "text": "Next and previous buttons navigate through matches in order; panel scrolls to each focused match",
+          "status": "pending"
+        },
+        {
+          "id": "F07-AC06",
+          "text": "Clicking a highlighted match seeks the video to that segment's start timestamp",
+          "status": "pending"
+        },
+        {
+          "id": "F07-AC07",
+          "text": "Pressing Escape or clearing the input removes all highlights and restores full opacity across all segments",
+          "status": "pending"
+        },
+        {
+          "id": "F07-AC08",
+          "text": "A query with no matches shows '0 matches' in the counter; all segments remain at full opacity",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "F08",
+      "name": "Global Video Search",
+      "priority": 2,
+      "wave": 6,
+      "is_foundation": false,
+      "dependencies": ["F03", "F05"],
+      "folder": "docs/F08-global-video-search",
+      "status": {
+        "spec": "pending",
+        "plan": "pending",
+        "implementation": "pending"
+      },
+      "acceptance_criteria": [
+        {
+          "id": "F08-AC01",
+          "text": "Search bar is visible in the top navigation on every authenticated page",
+          "status": "pending"
+        },
+        {
+          "id": "F08-AC02",
+          "text": "Typing 2+ characters in the bar shows a quick-results dropdown with up to 8 items within 500 ms",
+          "status": "pending"
+        },
+        {
+          "id": "F08-AC03",
+          "text": "Each quick result shows a small thumbnail, title, match type badge, and a text snippet",
+          "status": "pending"
+        },
+        {
+          "id": "F08-AC04",
+          "text": "Pressing Enter navigates to /search?q=... with up to 20 results ordered by relevance",
+          "status": "pending"
+        },
+        {
+          "id": "F08-AC05",
+          "text": "Full results page shows filter tabs (All / Title / Transcription / Category / Tag) that correctly filter the result set",
+          "status": "pending"
+        },
+        {
+          "id": "F08-AC06",
+          "text": "Transcription-based results include a snippet of up to 150 characters with query terms bolded",
+          "status": "pending"
+        },
+        {
+          "id": "F08-AC07",
+          "text": "Clicking a transcription-based result opens the video detail page with the matching segment highlighted and scrolled into view in the panel",
+          "status": "pending"
+        },
+        {
+          "id": "F08-AC08",
+          "text": "Searching by a category or tag name returns videos assigned to that category or tag",
+          "status": "pending"
+        },
+        {
+          "id": "F08-AC09",
+          "text": "No results returns 'No videos found for [query]. Try different keywords.'",
+          "status": "pending"
+        }
+      ]
+    }
+  ],
+  "cross_feature_integration": [
+    {
+      "id": "INT-01",
+      "description": "After F02 upload completes, F03 processing starts within 30 seconds; the video card in F04 transitions from 'Queued' to 'Processing' without page reload",
+      "features_involved": ["F02", "F03", "F04"],
+      "status": "pending"
+    },
+    {
+      "id": "INT-02",
+      "description": "Transcription segments produced by F03 (with start/end timestamps) render in F06's panel, and clicking each segment seeks the video to its corresponding moment",
+      "features_involved": ["F03", "F06"],
+      "status": "pending"
+    },
+    {
+      "id": "INT-03",
+      "description": "Segments available in F06 are searchable via F07; clicking a highlighted match triggers F06's seek to the correct timestamp",
+      "features_involved": ["F06", "F07"],
+      "status": "pending"
+    },
+    {
+      "id": "INT-04",
+      "description": "Full-text transcription indexed by F03 appears as a snippet in F08 results; clicking a transcription-based F08 result opens F06 with the matching segment highlighted and scrolled into view",
+      "features_involved": ["F03", "F06", "F08"],
+      "status": "pending"
+    },
+    {
+      "id": "INT-05",
+      "description": "Metadata saved in F05 (title, description, categories, tags) is reflected in F08 search results within the same user session",
+      "features_involved": ["F05", "F08"],
+      "status": "pending"
+    }
+  ]
+}
