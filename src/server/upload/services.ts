@@ -23,13 +23,14 @@ export function generateStoredFilename(mimeType: string): string {
 
 export async function saveFileToDisk(
   userId: string,
-  file: File
+  filename: string,
+  mimeType: string,
+  buffer: Buffer
 ): Promise<{ storedFilename: string; filePath: string }> {
-  const storedFilename = generateStoredFilename(file.type);
+  const storedFilename = generateStoredFilename(mimeType);
   const dir = getUploadDir(userId);
   const filePath = path.join(dir, storedFilename);
 
-  const buffer = Buffer.from(await file.arrayBuffer());
   fs.writeFileSync(filePath, buffer);
 
   return { storedFilename, filePath };

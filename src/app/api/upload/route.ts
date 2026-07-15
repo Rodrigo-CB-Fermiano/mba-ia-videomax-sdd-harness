@@ -68,7 +68,9 @@ export async function POST(req: NextRequest) {
   let filePath: string;
 
   try {
-    ({ storedFilename, filePath } = await saveFileToDisk(userId, file));
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    ({ storedFilename, filePath } = await saveFileToDisk(userId, file.name, file.type, buffer));
   } catch {
     return NextResponse.json({ error: "UPLOAD_FAILED" }, { status: 500 });
   }

@@ -70,7 +70,7 @@ describe("UploadZone", () => {
     });
 
     expect(onError).toHaveBeenCalledWith(expect.stringContaining("vídeo"));
-    expect(screen.getByText(/vídeo/i)).toBeTruthy();
+    expect(screen.getByText("Apenas arquivos de vídeo são aceitos.")).toBeTruthy();
   });
 
   it("rejeita arquivo maior que 300 MB", () => {
@@ -91,7 +91,7 @@ describe("UploadZone", () => {
     });
 
     expect(onError).toHaveBeenCalledWith(expect.stringContaining("300 MB"));
-    expect(screen.getByText(/300 MB/)).toBeTruthy();
+    expect(screen.getByText("Arquivo muito grande. O tamanho máximo permitido é 300 MB.")).toBeTruthy();
   });
 
   it("rejeita arquivo quando quota excedida", () => {

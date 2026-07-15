@@ -54,11 +54,9 @@ describe("generateStoredFilename", () => {
 describe("saveFileToDisk", () => {
   it("cria arquivo no diretório do usuário", async () => {
     const userId = "user-abc";
-    const content = "fake video content";
-    const blob = new Blob([content], { type: "video/mp4" });
-    const file = new File([blob], "test.mp4", { type: "video/mp4" });
+    const buffer = Buffer.from("fake video content");
 
-    const { filePath, storedFilename } = await saveFileToDisk(userId, file);
+    const { filePath, storedFilename } = await saveFileToDisk(userId, "test.mp4", "video/mp4", buffer);
 
     expect(fs.existsSync(filePath)).toBe(true);
     expect(storedFilename).toMatch(/\.mp4$/);
@@ -70,8 +68,8 @@ describe("saveFileToDisk", () => {
     const userDir = path.join(tempDir, userId);
     expect(fs.existsSync(userDir)).toBe(false);
 
-    const file = new File([new Blob(["data"])], "v.mp4", { type: "video/mp4" });
-    await saveFileToDisk(userId, file);
+    const buffer = Buffer.from("data");
+    await saveFileToDisk(userId, "v.mp4", "video/mp4", buffer);
 
     expect(fs.existsSync(userDir)).toBe(true);
   });
