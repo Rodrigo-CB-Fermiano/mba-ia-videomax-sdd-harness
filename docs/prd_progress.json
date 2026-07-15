@@ -84,50 +84,70 @@
       "dependencies": ["F01"],
       "folder": "docs/F02-video-upload",
       "status": {
-        "spec": "pending",
-        "plan": "pending",
-        "implementation": "pending"
+        "spec": "done",
+        "plan": "done",
+        "implementation": "done"
+      },
+      "evaluation": {
+        "status": "passed",
+        "last_run": "2026-07-15"
       },
       "acceptance_criteria": [
         {
           "id": "F02-AC01",
           "text": "User can upload a video via drag-and-drop into the drop zone",
-          "status": "pending"
+          "status": "verified",
+          "gtw": "GTW-01",
+          "note": "Covered by UploadZone.test.tsx (acceptsFile_validVideo) + e2e/upload.spec.ts"
         },
         {
           "id": "F02-AC02",
           "text": "User can upload a video via the file picker",
-          "status": "pending"
+          "status": "verified",
+          "gtw": "GTW-02",
+          "note": "Covered by UploadZone.test.tsx (acceptsFile_validVideo via input change)"
         },
         {
           "id": "F02-AC03",
           "text": "Files larger than 300 MB are rejected client-side before upload begins with 'File too large. Maximum allowed size is 300 MB.'",
-          "status": "pending"
+          "status": "verified",
+          "gtw": "GTW-03",
+          "note": "Covered by UploadZone.test.tsx (rejectsFile_oversized) — unit test passed"
         },
         {
           "id": "F02-AC04",
           "text": "Non-video MIME types are rejected with 'Only video files are accepted.'",
-          "status": "pending"
+          "status": "verified",
+          "gtw": "GTW-04",
+          "note": "Covered by UploadZone.test.tsx (rejectsFile_invalidMime) — unit test passed"
         },
         {
           "id": "F02-AC05",
           "text": "Upload progress shows filename, percentage, speed, and estimated time remaining in real time",
-          "status": "pending"
+          "status": "verified",
+          "gtw": "GTW-05",
+          "note": "Covered by ProgressBar.test.tsx (filename, %, speedBps, etaSeconds) — unit test passed"
         },
         {
           "id": "F02-AC06",
           "text": "Upload can be cancelled; partial file is removed and quota is not consumed",
-          "status": "pending"
+          "status": "verified",
+          "gtw": "GTW-06",
+          "note": "Covered by UploadZone.test.tsx (cancelButton_abortsXhrAndCallsEndpoint) + services.test.ts (deleteFileFromDisk) — unit tests passed"
         },
         {
           "id": "F02-AC07",
           "text": "On completion, the video card appears in the library with status 'Queued' within 5 seconds",
-          "status": "pending"
+          "status": "implemented",
+          "gtw": "GTW-01",
+          "note": "Implemented in UploadClient (router.push to /library) + Video created with status Queued — E2E required for full verification"
         },
         {
           "id": "F02-AC08",
           "text": "Attempting to upload when quota would be exceeded shows the remaining space and blocks the upload",
-          "status": "pending"
+          "status": "verified",
+          "gtw": "GTW-07",
+          "note": "Covered by UploadZone.test.tsx (rejectsFile_quotaExceeded) — unit test passed"
         }
       ]
     },
