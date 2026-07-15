@@ -74,22 +74,43 @@ model LoginAttempt {
 }
 
 model Video {
-  id               String      @id @default(cuid())
-  userId           String
-  originalFilename String
-  storedFilename   String      @unique
-  filePath         String
-  mimeType         String
-  fileSizeBytes    BigInt
-  status           VideoStatus @default(Queued)
-  failureReason    String?
-  uploadedAt       DateTime    @default(now())
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
+  id                  String      @id @default(cuid())
+  userId              String
+  originalFilename    String
+  storedFilename      String      @unique
+  filePath            String
+  mimeType            String
+  fileSizeBytes       BigInt
+  status              VideoStatus @default(Queued)
+  failureReason       String?
+  uploadedAt          DateTime    @default(now())
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  durationSeconds     Float?
+  thumbnailPath       String?
+  language            String?
+  retryCount          Int         @default(0)
+  processingStartedAt DateTime?
+  transcriptionText   String?     @db.Text
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  segments TranscriptionSegment[]
 
   @@index([userId, uploadedAt(sort: Desc)])
   @@index([userId, status])
   @@map("videos")
+}
+
+model TranscriptionSegment {
+  id      String @id @default(cuid())
+  videoId String
+  startMs Int
+  endMs   Int
+  text    String @db.Text
+  order   Int
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@index([videoId, order])
+  @@map("transcription_segments")
 }
