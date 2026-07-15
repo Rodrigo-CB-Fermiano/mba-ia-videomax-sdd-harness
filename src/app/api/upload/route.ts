@@ -5,6 +5,7 @@ import {
   saveFileToDisk,
   incrementQuota,
 } from "@/server/upload/services";
+import { triggerProcessing } from "@/server/processing/trigger";
 
 export const maxDuration = 60;
 
@@ -88,6 +89,8 @@ export async function POST(req: NextRequest) {
   });
 
   await incrementQuota(userId, fileSizeBigInt);
+
+  triggerProcessing(video.id);
 
   return NextResponse.json(
     {
