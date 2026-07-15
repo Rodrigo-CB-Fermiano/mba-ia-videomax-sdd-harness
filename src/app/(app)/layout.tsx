@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 
@@ -31,6 +32,15 @@ export default async function AppLayout({
         </div>
       </header>
       <main className="p-6">{children}</main>
+
+      <Link
+        href="/upload"
+        className="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center text-2xl transition-colors"
+        title="Enviar vídeo"
+        aria-label="Enviar vídeo"
+      >
+        ＋
+      </Link>
     </div>
   );
 }
