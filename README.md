@@ -150,64 +150,37 @@ Gera a especificação técnica de uma feature: `spec.md` (arquitetura), `plan.m
 # Modo interativo — entrevista passo a passo
 /spec-writer F03
 
-# Modo auto-accept — aceita todas as recomendações automaticamente
-/spec-writer F03 auto accept mode
-
-# Batch — gera specs para múltiplas features da mesma wave em paralelo
+# Batch — gera specs para múltiplas features da mesma wave em paralelo (auto-accept ativado automaticamente)
 /spec-writer F03 F04 F05
+/spec-writer wave 2
 ```
 
 Os arquivos são salvos em `docs/<ID>-<nome-kebab>/`.
 
-### `/implement-feature`
-
-Implementa uma feature a partir do trio `spec.md + plan.md + contract.md`, fase a fase, com commit por fase.
-
-```
-/implement-feature docs/F03-video-library/
-/implement-feature F03
-```
-
 ### `/implement-and-evaluate`
 
-Combina implementação + avaliação formal de contrato em um único ciclo. Após implementar, executa a suíte de testes completa, mapeia falhas aos GTW IDs do `contract.md`, tenta até 3 correções automáticas e atualiza `docs/prd_progress.json` com o resultado (`passed` ou `failed`).
+Skill principal de implementação. Implementa a feature fase a fase a partir do trio `spec.md + plan.md + contract.md`, executa a suíte de testes completa, mapeia falhas aos GTW IDs do `contract.md`, tenta até 3 correções automáticas e atualiza `docs/prd_progress.json` com o resultado (`passed` ou `failed`).
 
 ```
 /implement-and-evaluate F03
-/implement-and-evaluate @docs/PRD.md @docs/F03-video-library/
-```
-
-### `/evaluator`
-
-Avaliação isolada do contrato sem re-implementar. Útil para re-avaliar após correções manuais.
-
-```
-/evaluator F03
+/implement-and-evaluate docs/F03-video-library/
 ```
 
 ### `/fix-runner`
 
-Executa ciclo de diagnóstico e correção automática para testes falhando.
+Re-executa a avaliação de contrato e aplica correções cirúrgicas para uma feature que falhou. Útil para re-avaliar após correções manuais ou quando o ciclo de fixes do `implement-and-evaluate` se esgotou.
 
 ```
-/fix-runner
+/fix-runner F03
 ```
 
 ### `/grill-me` / `/grilling`
 
-Revisão crítica de código ou arquitetura — o agente questiona decisões de design, aponta fragilidades e sugere melhorias.
+Entrevista crítica sobre um plano, decisão ou ideia — o agente questiona cada aspecto, aponta fragilidades e força o refinamento do raciocínio.
 
 ```
-/grill-me src/server/upload/services.ts
+/grill-me
 /grilling docs/F03-video-library/spec.md
-```
-
-### `/clean-arch`
-
-Verifica aderência às convenções de arquitetura limpa do projeto.
-
-```
-/clean-arch
 ```
 
 ---
