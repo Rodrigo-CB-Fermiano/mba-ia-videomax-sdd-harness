@@ -50,3 +50,9 @@ test-results/
 .vercel
 *.tsbuildinfo
 next-env.d.ts
+
+# Claude Code local settings (skills are kept, only local overrides excluded)
+.claude/settings.local.json
+
+# Runtime upload storage
+storage/

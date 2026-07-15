@@ -4,6 +4,36 @@ Este contrato descreve a promessa testável da feature F01 em linguagem agnósti
 
 ---
 
+## Prerequisites
+
+### Persistent state
+- PostgreSQL database acessível em `DATABASE_URL`. As tabelas `User`, `Account`, `VerificationToken` e `LoginAttempt` existem com o schema exato da spec (migração Prisma aplicada via `prisma migrate dev`).
+- Nenhum usuário pré-semeado existe no banco de dados (os testes criam e limpam seus próprios dados).
+
+### Static inputs
+- `e2e/fixtures/test-user.json` — objeto `{ "email": "...", "name": "...", "password": "..." }` com senha satisfazendo a regra de 8+ caracteres e ao menos 1 número. Usado por testes E2E que iniciam a partir de um estado já autenticado.
+
+### Configuration
+- `NEXTAUTH_SECRET` — string aleatória de ao menos 32 caracteres.
+- `NEXTAUTH_URL` — `http://localhost:3000` no ambiente de teste.
+- `DATABASE_URL` — connection string PostgreSQL apontando para o banco de testes.
+- `GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET` — qualquer valor não-vazio é aceitável nos testes unitários (testes E2E de OAuth podem usar stub do provider).
+- `GITHUB_CLIENT_ID` e `GITHUB_CLIENT_SECRET` — idem ao Google.
+- `SMTP_HOST`, `SMTP_PORT`, `EMAIL_FROM` — apontando para servidor SMTP local (Mailpit) para testes E2E de entrega de email.
+
+### Runtime services
+*(responsabilidade do contract evaluator)*
+- PostgreSQL acessível em `DATABASE_URL`.
+- Mailpit SMTP na porta 1025, web UI na porta 8025.
+- Next.js dev server rodando em `http://localhost:3000`.
+
+### External dependencies
+*(responsabilidade do contract evaluator)*
+- App Google OAuth com callback `http://localhost:3000/api/auth/callback/google` (pode ser stubado nos testes E2E).
+- App GitHub OAuth com callback `http://localhost:3000/api/auth/callback/github` (pode ser stubado nos testes E2E).
+
+---
+
 ## Superfícies de Verificação
 
 | Superfície | Descrição | Como Verificar |
