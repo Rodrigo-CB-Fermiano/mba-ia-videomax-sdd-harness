@@ -4,6 +4,15 @@
     "prd": "docs/PRD.md",
     "created_at": "2026-07-14"
   },
+  "schedule": {
+    "basis": "1 feature per day starting from project creation",
+    "margin_days": 1,
+    "project_start": "2026-07-14",
+    "project_target": "2026-07-21",
+    "project_target_with_margin": "2026-07-22",
+    "status_formula": "Computed at render time from today's date + feature.status.implementation. Rule: if implementation=='done' → 'done'; elif today <= target_date → 'on_track'; elif today <= target_date_with_margin → 'at_risk'; else → 'delayed'",
+    "status_values": ["done", "on_track", "at_risk", "delayed"]
+  },
   "waves": [
     { "wave": 1, "features": ["F01"] },
     { "wave": 2, "features": ["F02"] },
@@ -22,6 +31,10 @@
       "is_foundation": true,
       "dependencies": [],
       "folder": "docs/F01-authentication-system",
+      "schedule": {
+        "target_date": "2026-07-14",
+        "target_date_with_margin": "2026-07-15"
+      },
       "status": {
         "spec": "done",
         "plan": "done",
@@ -83,6 +96,10 @@
       "is_foundation": false,
       "dependencies": ["F01"],
       "folder": "docs/F02-video-upload",
+      "schedule": {
+        "target_date": "2026-07-15",
+        "target_date_with_margin": "2026-07-16"
+      },
       "status": {
         "spec": "done",
         "plan": "done",
@@ -159,6 +176,10 @@
       "is_foundation": false,
       "dependencies": ["F02"],
       "folder": "docs/F03-background-processing",
+      "schedule": {
+        "target_date": "2026-07-16",
+        "target_date_with_margin": "2026-07-17"
+      },
       "status": {
         "spec": "pending",
         "plan": "pending",
@@ -220,6 +241,10 @@
       "is_foundation": false,
       "dependencies": ["F03"],
       "folder": "docs/F04-video-library",
+      "schedule": {
+        "target_date": "2026-07-17",
+        "target_date_with_margin": "2026-07-18"
+      },
       "status": {
         "spec": "pending",
         "plan": "pending",
@@ -291,6 +316,10 @@
       "is_foundation": false,
       "dependencies": ["F04"],
       "folder": "docs/F05-video-management",
+      "schedule": {
+        "target_date": "2026-07-19",
+        "target_date_with_margin": "2026-07-20"
+      },
       "status": {
         "spec": "pending",
         "plan": "pending",
@@ -357,6 +386,10 @@
       "is_foundation": false,
       "dependencies": ["F03"],
       "folder": "docs/F06-video-player-with-transcription-panel",
+      "schedule": {
+        "target_date": "2026-07-18",
+        "target_date_with_margin": "2026-07-19"
+      },
       "status": {
         "spec": "pending",
         "plan": "pending",
@@ -423,6 +456,10 @@
       "is_foundation": false,
       "dependencies": ["F06"],
       "folder": "docs/F07-transcription-search",
+      "schedule": {
+        "target_date": "2026-07-20",
+        "target_date_with_margin": "2026-07-21"
+      },
       "status": {
         "spec": "pending",
         "plan": "pending",
@@ -479,6 +516,10 @@
       "is_foundation": false,
       "dependencies": ["F03", "F05"],
       "folder": "docs/F08-global-video-search",
+      "schedule": {
+        "target_date": "2026-07-21",
+        "target_date_with_margin": "2026-07-22"
+      },
       "status": {
         "spec": "pending",
         "plan": "pending",
