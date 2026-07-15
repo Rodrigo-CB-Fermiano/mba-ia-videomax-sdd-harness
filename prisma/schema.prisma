@@ -7,18 +7,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum VideoStatus {
+  Queued
+  Processing
+  Ready
+  Failed
+}
+
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                 String    @id @default(cuid())
+  name               String?
+  email              String    @unique
+  emailVerified      DateTime?
+  image              String?
+  password           String?
+  storageUsedBytes   BigInt    @default(0)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 
   accounts      Account[]
   loginAttempts LoginAttempt[]
+  videos        Video[]
 
   @@map("users")
 }
@@ -62,4 +71,25 @@ model LoginAttempt {
 
   @@index([email, attemptedAt])
   @@map("login_attempts")
+}
+
+model Video {
+  id               String      @id @default(cuid())
+  userId           String
+  originalFilename String
+  storedFilename   String      @unique
+  filePath         String
+  mimeType         String
+  fileSizeBytes    BigInt
+  status           VideoStatus @default(Queued)
+  failureReason    String?
+  uploadedAt       DateTime    @default(now())
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, uploadedAt(sort: Desc)])
+  @@index([userId, status])
+  @@map("videos")
 }
