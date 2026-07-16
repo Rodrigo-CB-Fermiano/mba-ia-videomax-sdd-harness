@@ -200,7 +200,7 @@ PRD.md
 
 ---
 
-Ao final do desenvolvmento de um feature, podemos rodar um /simplify para o agent rodar uma "refatoração" do código, deixando ele mais simples.
+Ao final do desenvolvmento de uma feature, podemos rodar o comando /simplify para o agent rodar uma "refatoração" do código, deixando ele mais simples.
 
 ## Licença
 
