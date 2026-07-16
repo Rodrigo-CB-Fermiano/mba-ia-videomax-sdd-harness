@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SDD Progress Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .project-name { font-size: 1.2rem; font-weight: 700; color: #f8fafc; }
+    .project-meta { font-size: 0.75rem; color: #94a3b8; margin-top: 2px; }
+    .refresh-tag {
+      font-size: 0.7rem;
+      color: #3b82f6;
+      background: #1e3a5f;
+      border: 1px solid #1d4ed8;
+      padding: 3px 10px;
+      border-radius: 99px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 12px;
+      padding: 16px 24px;
+      background: #0a1222;
+      border-bottom: 1px solid #1e293b;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 12px 16px;
+      min-width: 130px;
+      flex: 1;
+    }
+    .stat-value { font-size: 1.6rem; font-weight: 700; color: #f8fafc; }
+    .stat-label { font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+    .progress-bar-wrap { height: 3px; background: #334155; border-radius: 99px; margin-top: 8px; }
+    .progress-bar-fill { height: 100%; background: #10b981; border-radius: 99px; transition: width 0.4s; }
+
+    main { padding: 24px; }
+
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+
+    .waves-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+
+    .wave-col {
+      background: #1e293b;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      overflow: hidden;
+    }
+    .wave-header {
+      padding: 10px 14px;
+      background: #0a1222;
+      border-bottom: 1px solid #334155;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .wave-badge {
+      background: #1d4ed8;
+      color: #bfdbfe;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 99px;
+      white-space: nowrap;
+    }
+    .wave-ids { font-size: 0.75rem; color: #64748b; font-family: monospace; }
+    .wave-features { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+
+    .feature-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .feature-card:hover { border-color: #3b82f6; }
+    .feature-card.expanded { border-color: #3b82f6; }
+    .feature-card.foundation { border-left: 3px solid #f59e0b; }
+
+    .feature-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .feature-id { font-size: 0.65rem; font-weight: 700; color: #475569; font-family: monospace; }
+    .feature-ac-count { font-size: 0.65rem; color: #475569; }
+    .feature-name { font-size: 0.825rem; font-weight: 600; color: #e2e8f0; margin-bottom: 8px; }
+    .foundation-badge { font-size: 0.6rem; color: #f59e0b; margin-left: 4px; }
+
+    .status-pills { display: flex; gap: 4px; flex-wrap: wrap; }
+    .pill {
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 99px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .pill-pending  { background: #1e293b; color: #64748b; border: 1px solid #334155; }
+    .pill-in_progress { background: #431407; color: #fb923c; border: 1px solid #7c2d12; }
+    .pill-done     { background: #052e16; color: #34d399; border: 1px solid #065f46; }
+
+    .feature-deps { font-size: 0.65rem; color: #475569; margin-top: 6px; font-family: monospace; }
+
+    .ac-list {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #1e293b;
+      display: none;
+    }
+    .feature-card.expanded .ac-list { display: block; }
+
+    .ac-item { display: flex; gap: 6px; margin-bottom: 7px; align-items: flex-start; }
+    .ac-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+    .ac-dot.pending      { background: #334155; }
+    .ac-dot.in_progress  { background: #f59e0b; }
+    .ac-dot.implemented  { background: #3b82f6; }
+    .ac-dot.verified     { background: #10b981; }
+    .ac-dot.done         { background: #10b981; }
+    .ac-id { font-size: 0.6rem; font-family: monospace; color: #475569; flex-shrink: 0; padding-top: 1px; }
+    .ac-gtw {
+      font-size: 0.55rem; font-family: monospace; font-weight: 700;
+      background: #172554; color: #93c5fd;
+      padding: 1px 5px; border-radius: 3px; flex-shrink: 0;
+    }
+    .ac-text { font-size: 0.72rem; color: #94a3b8; line-height: 1.45; }
+    .ac-note { font-size: 0.67rem; color: #475569; margin-top: 3px; font-style: italic; line-height: 1.4; }
+
+    .eval-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.63rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 4px; margin-top: 6px;
+    }
+    .eval-badge.eval-passed { background: #052e16; color: #34d399; border: 1px solid #065f46; }
+    .eval-badge.eval-failed { background: #450a0a; color: #fca5a5; border: 1px solid #7f1d1d; }
+    .eval-badge.eval-pending { background: #1e293b; color: #64748b; border: 1px solid #334155; }
+
+    .sched-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 0.62rem; font-weight: 700;
+      padding: 2px 7px; border-radius: 4px; margin-top: 6px;
+    }
+    .sched-on_track { background: #052e16; color: #34d399; border: 1px solid #065f46; }
+    .sched-at_risk  { background: #422006; color: #fbbf24; border: 1px solid #78350f; }
+    .sched-delayed  { background: #450a0a; color: #fca5a5; border: 1px solid #7f1d1d; }
+    .sched-done     { background: #052e16; color: #34d399; border: 1px solid #065f46; }
+
+    .legend-toggle {
+      font-size: 0.7rem; color: #64748b; cursor: pointer; user-select: none;
+      padding: 8px 24px; background: #0a1222; border-bottom: 1px solid #1e293b;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .legend-toggle:hover { color: #94a3b8; }
+    .legend-panel {
+      display: none; padding: 16px 24px;
+      background: #0a1222; border-bottom: 1px solid #1e293b;
+      gap: 28px; flex-wrap: wrap;
+    }
+    .legend-panel.open { display: flex; }
+    .legend-group { display: flex; flex-direction: column; gap: 7px; }
+    .legend-group-title {
+      font-size: 0.62rem; font-weight: 700; color: #475569;
+      text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1px;
+    }
+    .legend-item { display: flex; align-items: center; gap: 7px; font-size: 0.72rem; color: #94a3b8; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .legend-bar { width: 3px; height: 22px; border-radius: 2px; flex-shrink: 0; }
+
+    .integration-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .int-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .int-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .int-id { font-size: 0.7rem; font-family: monospace; color: #60a5fa; font-weight: 700; }
+    .int-desc { font-size: 0.775rem; color: #94a3b8; line-height: 1.5; margin-bottom: 10px; }
+    .int-footer { display: flex; align-items: center; justify-content: space-between; }
+    .int-features { display: flex; gap: 4px; flex-wrap: wrap; }
+    .int-feature-tag {
+      font-size: 0.6rem;
+      font-weight: 700;
+      background: #172554;
+      color: #93c5fd;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    /* ── Timeline ──────────────────────────────────── */
+    .timeline-section {
+      background: #0a1222;
+      border-bottom: 1px solid #1e293b;
+      padding: 16px 24px 32px;
+    }
+    .timeline-section .section-title { margin-bottom: 16px; }
+    .tl-range {
+      font-weight: 400; color: #475569;
+      text-transform: none; letter-spacing: 0;
+      font-size: 0.7rem; margin-left: 8px;
+    }
+    .tl-wrap {
+      position: relative;
+      height: 160px;
+      margin: 0 16px;
+    }
+    .tl-bar {
+      position: absolute;
+      top: 72px; left: 0; right: 0;
+      height: 4px;
+      background: #1e293b;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .tl-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1d4ed8, #3b82f6);
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+    .tl-today-line {
+      position: absolute;
+      top: 0; bottom: 0; width: 0;
+      border-left: 1.5px dashed rgba(96,165,250,0.45);
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+    .tl-today-lbl {
+      position: absolute;
+      top: 6px;
+      transform: translateX(-50%);
+      font-size: 0.58rem; font-weight: 700; color: #60a5fa;
+      white-space: nowrap;
+      background: #0a1222;
+      padding: 1px 5px; border-radius: 3px;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .tl-marker {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform: translateX(-50%);
+    }
+    .tl-marker.above {
+      top: 0; height: 72px;
+      justify-content: flex-end;
+    }
+    .tl-marker.below {
+      top: 76px; height: 84px;
+      justify-content: flex-start;
+    }
+    .tl-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      border: 2px solid;
+      flex-shrink: 0;
+    }
+    .tl-stem {
+      width: 1px;
+      background: #334155;
+      flex: 1;
+    }
+    .tl-mlabel {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 1px;
+      flex-shrink: 0;
+    }
+    .tl-fid {
+      font-size: 0.65rem; font-weight: 700;
+      font-family: monospace; white-space: nowrap;
+    }
+    .tl-fdate {
+      font-size: 0.57rem; color: #475569; white-space: nowrap;
+    }
+    /* ────────────────────────────────────────────── */
+
+    footer {
+      text-align: right;
+      font-size: 0.7rem;
+      color: #334155;
+      padding: 12px 24px;
+      border-top: 1px solid #1e293b;
+    }
+
+    #error-banner {
+      display: none;
+      background: #450a0a;
+      border: 1px solid #7f1d1d;
+      color: #fca5a5;
+      font-size: 0.8rem;
+      padding: 10px 24px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="project-name" id="project-name">Carregando…</div>
+    <div class="project-meta" id="project-meta"></div>
+  </div>
+  <div class="refresh-tag">auto-refresh 5s</div>
+</header>
+
+<div id="error-banner"></div>
+
+<div class="stats" id="stats"></div>
+
+<div class="legend-toggle" onclick="toggleLegend()">
+  <span>Legenda</span>
+  <span id="legend-arrow">▼</span>
+</div>
+<div class="legend-panel" id="legend-panel">
+  <div class="legend-group">
+    <div class="legend-group-title">Faróis de AC</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#334155"></div> Pendente</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div> Em andamento</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div> Implementado (sem verificação formal)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div> Verificado / Concluído</div>
+  </div>
+  <div class="legend-group">
+    <div class="legend-group-title">Status de Etapa (Spec / Plan / Impl)</div>
+    <div class="legend-item"><span class="pill pill-pending">Pendente</span></div>
+    <div class="legend-item"><span class="pill pill-in_progress">Em andamento</span></div>
+    <div class="legend-item"><span class="pill pill-done">Concluído</span></div>
+  </div>
+  <div class="legend-group">
+    <div class="legend-group-title">Avaliação da Feature</div>
+    <div class="legend-item"><span class="eval-badge eval-passed" style="margin:0">Eval: Aprovada</span></div>
+    <div class="legend-item"><span class="eval-badge eval-failed" style="margin:0">Eval: Reprovada</span></div>
+    <div class="legend-item"><span class="eval-badge eval-pending" style="margin:0">Eval: Pendente</span></div>
+  </div>
+  <div class="legend-group">
+    <div class="legend-group-title">Cronograma (calculado em runtime)</div>
+    <div class="legend-item"><span class="sched-badge sched-on_track" style="margin:0">● Em dia</span> — hoje ≤ data alvo</div>
+    <div class="legend-item"><span class="sched-badge sched-at_risk"  style="margin:0">⚠ Em risco</span> — passou alvo, dentro da margem</div>
+    <div class="legend-item"><span class="sched-badge sched-delayed"  style="margin:0">✕ Atrasado</span> — passou a margem</div>
+    <div class="legend-item"><span class="sched-badge sched-done"     style="margin:0">✓ Concluído</span> — impl = done</div>
+  </div>
+  <div class="legend-group">
+    <div class="legend-group-title">Feature Especial</div>
+    <div class="legend-item">
+      <div class="legend-bar" style="background:#f59e0b"></div>
+      Foundation — base obrigatória para as demais
+    </div>
+  </div>
+  <div class="legend-group">
+    <div class="legend-group-title">Outros</div>
+    <div class="legend-item">
+      <span class="ac-gtw" style="font-size:0.65rem">GTW-XX</span>
+      Gateway de teste referenciado
+    </div>
+    <div class="legend-item" style="font-size:0.72rem;color:#475569;font-style:italic">
+      Texto em itálico = nota de implementação do AC
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="section-title">Waves de Implementação</div>
+  <div class="waves-grid" id="waves-grid"></div>
+
+  <div class="section-title">Integrações Cross-Feature</div>
+  <div class="integration-grid" id="integration-grid"></div>
+</main>
+
+<footer id="footer">—</footer>
+
+<script>
+  const JSON_URL = '/sdd-harness/mba-ia-videomax-sdd-harness/docs/prd_progress.json';
+  const expanded = new Set();
+
+  const STATUS_LABEL = {
+    pending: 'Pendente', in_progress: 'Em andamento',
+    done: 'Concluído', implemented: 'Implementado', verified: 'Verificado'
+  };
+  const AC_DONE_SET = new Set(['done', 'implemented', 'verified']);
+
+  const SCHED_LABEL = {
+    done:     '✓ Concluído',
+    on_track: '● Em dia',
+    at_risk:  '⚠ Em risco',
+    delayed:  '✕ Atrasado'
+  };
+
+  function fmtDate(iso) {
+    const [, m, d] = iso.split('-');
+    return `${d}/${m}`;
+  }
+
+  function scheduleStatus(f) {
+    if (!f.schedule) return null;
+    if (f.status.implementation === 'done') return 'done';
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const target = new Date(f.schedule.target_date + 'T00:00:00');
+    const margin = new Date(f.schedule.target_date_with_margin + 'T00:00:00');
+    if (today <= target) return 'on_track';
+    if (today <= margin) return 'at_risk';
+    return 'delayed';
+  }
+
+  function overallScheduleStatus(features) {
+    const statuses = features.map(scheduleStatus).filter(Boolean);
+    if (statuses.length === 0) return null;
+    if (statuses.every(s => s === 'done')) return 'done';
+    if (statuses.some(s => s === 'delayed')) return 'delayed';
+    if (statuses.some(s => s === 'at_risk')) return 'at_risk';
+    return 'on_track';
+  }
+
+  function pill(label, status) {
+    return `<span class="pill pill-${status}">${label}: ${STATUS_LABEL[status] || status}</span>`;
+  }
+
+  function featureHtml(f) {
+    const acTotal = f.acceptance_criteria.length;
+    const acDone  = f.acceptance_criteria.filter(a => AC_DONE_SET.has(a.status)).length;
+    const pct     = acTotal > 0 ? Math.round(acDone / acTotal * 100) : 0;
+
+    const acRows = f.acceptance_criteria.map(ac => `
+      <div class="ac-item">
+        <div class="ac-dot ${ac.status}"></div>
+        <div style="display:flex;flex-direction:column;flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
+            <span class="ac-id">${ac.id}</span>
+            ${ac.gtw ? `<span class="ac-gtw">${ac.gtw}</span>` : ''}
+          </div>
+          <span class="ac-text">${ac.text}</span>
+          ${ac.note ? `<div class="ac-note">${ac.note}</div>` : ''}
+        </div>
+      </div>
+    `).join('');
+
+    const evalHtml = f.evaluation ? `
+      <div class="eval-badge eval-${f.evaluation.status}">
+        Eval: ${STATUS_LABEL[f.evaluation.status] || f.evaluation.status} · ${f.evaluation.last_run}
+      </div>` : '';
+
+    const ss = scheduleStatus(f);
+    const schedHtml = (f.schedule && ss) ? `
+      <div class="sched-badge sched-${ss}">
+        ${SCHED_LABEL[ss]} · alvo ${fmtDate(f.schedule.target_date)} <span style="opacity:0.6;">(margem ${fmtDate(f.schedule.target_date_with_margin)})</span>
+      </div>` : '';
+
+    const deps = f.dependencies.length
+      ? `<div class="feature-deps">deps: ${f.dependencies.join(', ')}</div>` : '';
+    const found = f.is_foundation
+      ? `<span class="foundation-badge">★ foundation</span>` : '';
+    const barColor = pct === 100 ? '#10b981' : '#3b82f6';
+
+    return `
+      <div class="feature-card${f.is_foundation ? ' foundation' : ''}${expanded.has(f.id) ? ' expanded' : ''}"
+           data-fid="${f.id}" onclick="toggle('${f.id}')">
+        <div class="feature-top">
+          <span class="feature-id">${f.id}${found}</span>
+          <span class="feature-ac-count">${acDone}/${acTotal} ACs</span>
+        </div>
+        <div class="feature-name">${f.name}</div>
+        <div class="status-pills">
+          ${pill('Spec', f.status.spec)}
+          ${pill('Plan', f.status.plan)}
+          ${pill('Impl', f.status.implementation)}
+        </div>
+        <div class="progress-bar-wrap" style="margin-top:8px;">
+          <div class="progress-bar-fill" style="width:${pct}%;background:${barColor};"></div>
+        </div>
+        ${deps}
+        ${schedHtml}
+        ${evalHtml}
+        <div class="ac-list">${acRows}</div>
+      </div>`;
+  }
+
+  function render(data) {
+    document.getElementById('project-name').textContent = data.project.name;
+    document.getElementById('project-meta').textContent =
+      `Criado em ${data.project.created_at}  ·  PRD: ${data.project.prd}`;
+
+    const features = data.features;
+    const totalAC = features.reduce((s, f) => s + f.acceptance_criteria.length, 0);
+    const doneAC  = features.reduce((s, f) => s + f.acceptance_criteria.filter(a => AC_DONE_SET.has(a.status)).length, 0);
+
+    const stages = ['spec', 'plan', 'implementation'];
+    let stageDone = 0, stageTotal = features.length * stages.length;
+    features.forEach(f => stages.forEach(s => { if (f.status[s] === 'done') stageDone++; }));
+    const overallPct = stageTotal > 0 ? Math.round(stageDone / stageTotal * 100) : 0;
+    const acPct = totalAC > 0 ? Math.round(doneAC / totalAC * 100) : 0;
+
+    const oss = overallScheduleStatus(features);
+    const ossLabel = SCHED_LABEL[oss] || '—';
+    const ossColor = { done: '#34d399', on_track: '#34d399', at_risk: '#fbbf24', delayed: '#fca5a5' }[oss] || '#64748b';
+    const projectTarget = data.schedule ? fmtDate(data.schedule.project_target) : '—';
+    const projectMargin = data.schedule ? fmtDate(data.schedule.project_target_with_margin) : '—';
+
+    document.getElementById('stats').innerHTML = `
+      <div class="stat-card">
+        <div class="stat-value">${data.waves.length}</div>
+        <div class="stat-label">Waves</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${features.length}</div>
+        <div class="stat-label">Features</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${totalAC}</div>
+        <div class="stat-label">Critérios de aceite</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${doneAC}/${totalAC}</div>
+        <div class="stat-label">ACs concluídos</div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${acPct}%"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${overallPct}%</div>
+        <div class="stat-label">Progresso geral</div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${overallPct}%"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="font-size:1.1rem;color:${ossColor}">${ossLabel}</div>
+        <div class="stat-label">Cronograma</div>
+        <div style="font-size:0.65rem;color:#475569;margin-top:4px;">alvo ${projectTarget} · margem ${projectMargin}</div>
+      </div>`;
+
+    const fmap = {};
+    features.forEach(f => fmap[f.id] = f);
+
+    document.getElementById('waves-grid').innerHTML = data.waves.map(w => {
+      const wf = w.features.map(id => fmap[id]).filter(Boolean);
+      return `
+        <div class="wave-col">
+          <div class="wave-header">
+            <span class="wave-badge">Wave ${w.wave}</span>
+            <span class="wave-ids">${w.features.join(' · ')}</span>
+          </div>
+          <div class="wave-features">${wf.map(featureHtml).join('')}</div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('integration-grid').innerHTML =
+      data.cross_feature_integration.map(i => `
+        <div class="int-card">
+          <div class="int-header">
+            <span class="int-id">${i.id}</span>
+            <span class="pill pill-${i.status}">${STATUS_LABEL[i.status] || i.status}</span>
+          </div>
+          <div class="int-desc">${i.description}</div>
+          <div class="int-footer">
+            <div class="int-features">${i.features_involved.map(f =>
+              `<span class="int-feature-tag">${f}</span>`).join('')}</div>
+          </div>
+        </div>`).join('');
+
+    document.getElementById('footer').textContent =
+      `Última atualização: ${new Date().toLocaleTimeString('pt-BR')}  ·  ${JSON_URL}`;
+  }
+
+  function toggleLegend() {
+    const panel = document.getElementById('legend-panel');
+    const arrow = document.getElementById('legend-arrow');
+    const open = panel.classList.toggle('open');
+    arrow.textContent = open ? '▲' : '▼';
+  }
+
+  function toggle(id) {
+    expanded.has(id) ? expanded.delete(id) : expanded.add(id);
+    const card = document.querySelector(`[data-fid="${id}"]`);
+    if (card) card.classList.toggle('expanded');
+  }
+
+  async function load() {
+    try {
+      const res = await fetch(JSON_URL + '?_t=' + Date.now());
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      document.getElementById('error-banner').style.display = 'none';
+      render(data);
+    } catch (e) {
+      const banner = document.getElementById('error-banner');
+      banner.style.display = 'block';
+      banner.textContent = `Erro ao carregar JSON: ${e.message} — ${JSON_URL}`;
+    }
+  }
+
+  load();
+  setInterval(load, 5000);
+</script>
+</body>
+</html>
